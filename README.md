@@ -1,10 +1,13 @@
 # Egoist Tap
 
+## All formulae
+
+- [`aho`](https://github.com/egoist/aho)
+- [`dum`](https://github.com/egoist/dum)
+
 ## How do I install these formulae?
 
 `brew install egoist/tap/<formula>`
-
-Or `brew tap egoist/tap` and then `brew install <formula>`.
 
 ## Documentation
 

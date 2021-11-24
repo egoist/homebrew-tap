@@ -3,10 +3,11 @@ import { cac } from "https://unpkg.com/cac@6/mod.ts"
 const cli = cac()
 
 type Asset = {
-  type: "macos" | "linux"
+  name: string
+  type: "macos" | "linux" | "unknown"
   url: string
   sha: string
-  arch: "arm" | "x86"
+  arch: "arm" | "x86" | "unknown"
 }
 
 const renderAssests = (
@@ -79,16 +80,22 @@ cli
       `https://api.github.com/repos/${repo}/releases/latest`
     ).then((res) => res.json())
 
-    let checksumsUrl: string | undefined
+    const checksums: Record<string, string> = {}
 
-    let assets: Asset[] = data.assets
-      .map((asset: any) => {
+    let assets: Asset[] = await Promise.all<any>(
+      data.assets.map(async (asset: any) => {
         const name = asset.name.toLowerCase()
         const url = asset.browser_download_url
-        if (url.endsWith("checksums.txt")) {
-          checksumsUrl = url
+        if (url.endsWith("sha256sum.txt")) {
+          const [sha, name] = await fetch(url)
+            .then((res) => res.text())
+            .then((res) => {
+              return res.trim().split(/\s+/)
+            })
+          checksums[name] = sha
         }
         return {
+          name: asset.name,
           url,
           type: name.includes("darwin")
             ? "macos"
@@ -104,7 +111,8 @@ cli
               : "unknown",
         }
       })
-      .filter((asset: any) => {
+    ).then((assets) =>
+      assets.filter((asset: any) => {
         return (
           asset.name !== "unknown" &&
           asset.arch !== "unknown" &&
@@ -113,20 +121,12 @@ cli
             asset.url.endsWith(".tgz"))
         )
       })
+    )
 
-    if (checksumsUrl) {
-      const checksums = await fetch(checksumsUrl)
-        .then((res) => res.text())
-        .then((res) => res.split("\n").map((line) => line.split(" ")))
-
-      assets = assets.map((asset) => {
-        const line = checksums.find((line) => asset.url.endsWith(line[1]))
-        if (line) {
-          asset.sha = line[0]
-        }
-        return asset
-      })
-    }
+    assets = assets.map((asset) => {
+      asset.sha = checksums[asset.name]
+      return asset
+    })
 
     const bin = repo.split("/")[1]
 

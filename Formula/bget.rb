@@ -5,20 +5,20 @@
 class Bget < Formula
   desc ""
   homepage ""
-  version "1.0.4"
+  version "1.0.5"
 
   on_macos do
     if Hardware::CPU.intel?
-      url "https://github.com/egoist/bget/releases/download/v1.0.4/bget_1.0.4_Darwin_x86_64.tar.gz"
-      sha256 "e365e35146331b7f565deb5ca2318707c0e943e3cbab6c553bfc6f8cba49997a"
+      url "https://github.com/egoist/bget/releases/download/v1.0.5/bget_1.0.5_Darwin_x86_64.tar.gz"
+      sha256 "43ff5c45f47aa148a3cfb987ad411e00e3368b11e06145ed98f2daf425001099"
 
       def install
         bin.install "bget"
       end
     end
     if Hardware::CPU.arm?
-      url "https://github.com/egoist/bget/releases/download/v1.0.4/bget_1.0.4_Darwin_arm64.tar.gz"
-      sha256 "0f9ea986fd4cdcc060576def89c4f7d98393053e770336a5d6886923c50d3579"
+      url "https://github.com/egoist/bget/releases/download/v1.0.5/bget_1.0.5_Darwin_arm64.tar.gz"
+      sha256 "3e516795de1ccd0986d113d2a16824c6bac13aa38f3e0254a81272db2c9aa1fb"
 
       def install
         bin.install "bget"
@@ -28,16 +28,16 @@ class Bget < Formula
 
   on_linux do
     if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-      url "https://github.com/egoist/bget/releases/download/v1.0.4/bget_1.0.4_Linux_arm64.tar.gz"
-      sha256 "84c133e981a7358d9e600feb8145fd4eb96ce62e3d07e18641a564c43afd3ae4"
+      url "https://github.com/egoist/bget/releases/download/v1.0.5/bget_1.0.5_Linux_arm64.tar.gz"
+      sha256 "058873e3287aa1d54dd31aea2839a8ce973678c919f225aad1bdd97d270be096"
 
       def install
         bin.install "bget"
       end
     end
     if Hardware::CPU.intel?
-      url "https://github.com/egoist/bget/releases/download/v1.0.4/bget_1.0.4_Linux_x86_64.tar.gz"
-      sha256 "49be39c332a06fdff94960c4fd4d660a8a8d1a265cf421fc617572b9cde4987f"
+      url "https://github.com/egoist/bget/releases/download/v1.0.5/bget_1.0.5_Linux_x86_64.tar.gz"
+      sha256 "724e3e41ae624fc945c8fad8acdaa8d13db4033ddd7f415a4f92db226f0fef50"
 
       def install
         bin.install "bget"

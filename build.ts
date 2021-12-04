@@ -10,6 +10,18 @@ type Asset = {
   arch: "arm" | "x86" | "unknown"
 }
 
+const uniqueBy = <T>(arr: T[], getKey: (item: T) => string) => {
+  const keys: Set<string> = new Set()
+  return arr.filter((item) => {
+    const key = getKey(item)
+    if (!keys.has(key)) {
+      keys.add(key)
+      return true
+    }
+    return false
+  })
+}
+
 const renderAssests = (
   assets: Asset[],
   type: "macos" | "linux",
@@ -123,10 +135,12 @@ cli
       })
     )
 
-    assets = assets.map((asset) => {
-      asset.sha = checksums[asset.name]
-      return asset
-    })
+    assets = uniqueBy(assets, (item) => `${item.type}_${item.arch}`).map(
+      (asset) => {
+        asset.sha = checksums[asset.name]
+        return asset
+      }
+    )
 
     const bin = repo.split("/")[1]
 

@@ -2,14 +2,14 @@
 class Dum < Formula
   desc "An npm scripts runner written in Rust."
   homepage "https://github.com/egoist/dum"
-  version "0.1.10"
+  version "0.1.11"
 
   
 on_macos do
   
   if Hardware::CPU.arm?
-    url "https://github.com/egoist/dum/releases/download/v0.1.10/dum-aarch64-apple-darwin.zip"
-    sha256 "63bdae6df7ea8a56cfb3bfcc68f8324a7ccd5a6844659b05278d5ad8a70686cb"
+    url "https://github.com/egoist/dum/releases/download/v0.1.11/dum-aarch64-apple-darwin.zip"
+    sha256 "cb885eb0854053db3a6168c857aac88bf9bbe8bef81282881a612d543c7a6d55"
 
     def install
       bin.install "dum"
@@ -18,8 +18,8 @@ on_macos do
   
 
   if Hardware::CPU.intel?
-    url "https://github.com/egoist/dum/releases/download/v0.1.10/dum-x86_64-apple-darwin.zip"
-    sha256 "aa036059be5095aefd3f956b26fc8dd31fb21da1a749e8dd1e281ea890b204a8"
+    url "https://github.com/egoist/dum/releases/download/v0.1.11/dum-x86_64-apple-darwin.zip"
+    sha256 "85cb25f407f4c93e9fb383aba214a4bf7b2c58a7186e8d6c007bc6a8c7d33221"
 
     def install
       bin.install "dum"
@@ -32,9 +32,19 @@ end
   
 on_linux do
   
+  if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+    url "https://github.com/egoist/dum/releases/download/v0.1.11/dum-aarch64-unknown-linux-musl.tar.gz"
+    sha256 "a06ca1b51d50aa87df645e0f060c93c5cb9479f7198d5bc87412e7e240a3977a"
+
+    def install
+      bin.install "dum"
+    end
+  end
+  
+
   if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-    url "https://github.com/egoist/dum/releases/download/v0.1.10/dum-x86_64-unknown-linux-gnu.tgz"
-    sha256 "94cfb13feae1209025c89588106a9eed27dfc77c756c7312d9d0e2d97d92d2ed"
+    url "https://github.com/egoist/dum/releases/download/v0.1.11/dum-x86_64-unknown-linux-musl.tar.gz"
+    sha256 "308c1f90ee08dcd85128987ae4da6f23a958d0b375b278f876854a52f3e30d8a"
 
     def install
       bin.install "dum"

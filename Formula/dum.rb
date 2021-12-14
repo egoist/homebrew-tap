@@ -2,14 +2,14 @@
 class Dum < Formula
   desc "An npm scripts runner written in Rust."
   homepage "https://github.com/egoist/dum"
-  version "0.1.18"
+  version "0.1.19"
 
   
 on_macos do
   
   if Hardware::CPU.arm?
-    url "https://github.com/egoist/dum/releases/download/v0.1.18/dum-aarch64-apple-darwin.zip"
-    sha256 "f33647745aef23effba04c9e252b66f31c2c362fd5b4eb8498da636e0abd280a"
+    url "https://github.com/egoist/dum/releases/download/v0.1.19/dum-aarch64-apple-darwin.zip"
+    sha256 "59f977d43c8b5c8716f815fc5685ff896dcaa107914d076a331bbe73db017712"
 
     def install
       bin.install "dum"
@@ -18,8 +18,8 @@ on_macos do
   
 
   if Hardware::CPU.intel?
-    url "https://github.com/egoist/dum/releases/download/v0.1.18/dum-x86_64-apple-darwin.zip"
-    sha256 "c758a217d229076a2268e9e4cee89524e817aa3353d86b99df7a1a7aef8d2543"
+    url "https://github.com/egoist/dum/releases/download/v0.1.19/dum-x86_64-apple-darwin.zip"
+    sha256 "ed638d1654ca65028c0e837a0104dae456eceabcd23cd2b878d1541a15d4da70"
 
     def install
       bin.install "dum"
@@ -33,8 +33,8 @@ end
 on_linux do
   
   if Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
-    url "https://github.com/egoist/dum/releases/download/v0.1.18/dum-aarch64-unknown-linux-musl.tar.gz"
-    sha256 "12a1cf89e579f91dd004f099153f21babaf379b13d1110ac18dc52f8eb3e3cbd"
+    url "https://github.com/egoist/dum/releases/download/v0.1.19/dum-aarch64-unknown-linux-musl.tar.gz"
+    sha256 "a8d537b3408c5b24a8a166898529a0d2e86ecf3893e7a2418cbc1a89d851ebd2"
 
     def install
       bin.install "dum"
@@ -43,8 +43,8 @@ on_linux do
   
 
   if Hardware::CPU.intel? && Hardware::CPU.is_64_bit?
-    url "https://github.com/egoist/dum/releases/download/v0.1.18/dum-x86_64-unknown-linux-musl.tar.gz"
-    sha256 "58a88cb0e1d3452f1fc3f2e6322a93973f754c9c22c55fa8cef334dfc2d0c1d0"
+    url "https://github.com/egoist/dum/releases/download/v0.1.19/dum-x86_64-unknown-linux-musl.tar.gz"
+    sha256 "2649497df25ba645deb5f79791adbe73f89f81f7cdde95f327e3aee281511ff0"
 
     def install
       bin.install "dum"

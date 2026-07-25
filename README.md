@@ -1,5 +1,21 @@
 # Egoist Tap
 
+## Casks
+
+- [`kero`](https://kero.sh) — keyboard-first terminal workspace
+
+```sh
+brew install --cask egoist/tap/kero
+```
+
+kero updates itself in-app via [Sparkle](https://sparkle-project.org), so
+`brew upgrade` normally has nothing to do. To make Homebrew reinstall the
+version pinned here anyway:
+
+```sh
+brew upgrade --cask --greedy kero
+```
+
 ## All formulae
 
 - [`aho`](https://github.com/egoist/aho)

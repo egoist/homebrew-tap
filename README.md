@@ -5,7 +5,7 @@
 - [`kero`](https://kero.sh) — keyboard-first terminal workspace
 
 ```sh
-brew install --cask egoist/tap/kero
+brew install egoist/tap/kero
 ```
 
 kero updates itself in-app via [Sparkle](https://sparkle-project.org), so
@@ -13,7 +13,7 @@ kero updates itself in-app via [Sparkle](https://sparkle-project.org), so
 version pinned here anyway:
 
 ```sh
-brew upgrade --cask --greedy kero
+brew upgrade --greedy kero
 ```
 
 ## All formulae

@@ -1,7 +1,6 @@
 class Dum < Formula
   desc "Npm scripts runner written in Rust"
   homepage "https://github.com/egoist/dum"
-  version "0.1.19"
 
   on_macos do
     if Hardware::CPU.arm?

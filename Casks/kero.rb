@@ -1,6 +1,6 @@
 cask "kero" do
-  version "0.1.29"
-  sha256 "67c2e9aba88e7d01db18faafd84282d77eca06d99500dbd75283af843bce1064"
+  version "0.1.30"
+  sha256 "f67239ed6505d4e5e7e8de8473b54dc2023a311c3586e79a95c7d749904b05e1"
 
   url "https://releases.kero.sh/kero-#{version}.dmg"
   name "Kero"

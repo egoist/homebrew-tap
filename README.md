@@ -2,7 +2,12 @@
 
 ## Casks
 
+- [`postcat`](https://github.com/egoist/postcat) — keyboard-first API client in your terminal
 - [`kero`](https://kero.sh) — keyboard-first terminal workspace
+
+```sh
+brew install --cask egoist/tap/postcat
+```
 
 ```sh
 brew install egoist/tap/kero

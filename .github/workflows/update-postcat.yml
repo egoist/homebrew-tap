@@ -1,0 +1,79 @@
+name: Update postcat cask
+
+on:
+  repository_dispatch:
+    types: [postcat-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: postcat release version (without the v prefix)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        env:
+          DISPATCH_VERSION: ${{ github.event.client_payload.version }}
+          MANUAL_VERSION: ${{ inputs.version }}
+        run: |
+          version="$DISPATCH_VERSION"
+          if [ -z "$version" ]; then version="$MANUAL_VERSION"; fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.].*)?$ ]]; then
+            echo "Invalid version: $version" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Update cask
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          base="https://github.com/egoist/postcat/releases/download/v${VERSION}"
+          arm="postcat-${VERSION}-aarch64-apple-darwin.tar.gz"
+          intel="postcat-${VERSION}-x86_64-apple-darwin.tar.gz"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/$arm" "$base/$arm"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/$intel" "$base/$intel"
+          arm_sha=$(sha256sum "$RUNNER_TEMP/$arm" | cut -d ' ' -f1)
+          intel_sha=$(sha256sum "$RUNNER_TEMP/$intel" | cut -d ' ' -f1)
+
+          cat > Casks/postcat.rb <<EOF
+          cask "postcat" do
+            version "${VERSION}"
+
+            on_arm do
+              url "${base}/${arm}"
+              sha256 "${arm_sha}"
+            end
+
+            on_intel do
+              url "${base}/${intel}"
+              sha256 "${intel_sha}"
+            end
+
+            name "Postcat"
+            desc "Keyboard-first API client in your terminal"
+            homepage "https://github.com/egoist/postcat"
+
+            binary "postcat"
+          end
+          EOF
+
+      - name: Commit cask
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/postcat.rb
+          git commit -m "postcat ${VERSION}" || exit 0
+          git push

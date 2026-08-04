@@ -1,16 +1,16 @@
 class Postcat < Formula
   desc "Keyboard-first API client in your terminal"
   homepage "https://github.com/egoist/postcat"
-  version "0.1.1"
+  version "0.1.4"
 
   # `postcat` collides with the mail-queue-viewer command that ships with
-  # Postfix, so this formula also installs a `pcat` alias (a symlink to the
-  # same binary) for anyone who wants an unambiguous name on their PATH.
+  # Postfix, so this formula also installs a `pcat` alias (a symlink to
+  # the same binary) for anyone who wants an unambiguous name on their PATH.
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/egoist/postcat/releases/download/v0.1.1/postcat-0.1.1-aarch64-apple-darwin.tar.gz"
-      sha256 "b721a5e595551f50a77fec84b27b81c5ed122a98389278b6354364269ff92b6b"
+      url "https://github.com/egoist/postcat/releases/download/v0.1.4/postcat-0.1.4-aarch64-apple-darwin.tar.gz"
+      sha256 "1ba2390a1045971202f12ae2a4e0925310920271ad10fbe4f3dd29939dcf147a"
 
       define_method(:install) do
         bin.install "postcat"
@@ -19,8 +19,8 @@ class Postcat < Formula
     end
 
     if Hardware::CPU.intel?
-      url "https://github.com/egoist/postcat/releases/download/v0.1.1/postcat-0.1.1-x86_64-apple-darwin.tar.gz"
-      sha256 "47f31d8541c7bc71ebb8e5c5f1ef68d0d03835451705025f7bca3461216e5a21"
+      url "https://github.com/egoist/postcat/releases/download/v0.1.4/postcat-0.1.4-x86_64-apple-darwin.tar.gz"
+      sha256 "7243ad6338f38fee21687cb409c8abe07005d914841054a01a11fa656fa11c3a"
 
       define_method(:install) do
         bin.install "postcat"

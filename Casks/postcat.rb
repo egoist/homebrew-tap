@@ -15,5 +15,12 @@ cask "postcat" do
   desc "Keyboard-first API client in your terminal"
   homepage "https://github.com/egoist/postcat"
 
-  binary "postcat"
+  # Installed as `pcat` because `postcat` is already the name of a
+  # command that ships with Postfix (used to view mail queue files),
+  # so installing this cask must not shadow/conflict with it.
+  binary "postcat", target: "pcat"
+
+  postflight do
+    system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/postcat"]
+  end
 end

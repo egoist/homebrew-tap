@@ -9,6 +9,9 @@
 brew install --cask egoist/tap/postcat
 ```
 
+Installs as the `pcat` command (not `postcat`), since `postcat` already
+names the Postfix mail-queue viewer that ships on most systems.
+
 ```sh
 brew install egoist/tap/kero
 ```

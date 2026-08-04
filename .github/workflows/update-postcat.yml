@@ -76,6 +76,22 @@ jobs:
               end
             end
 
+            def post_install
+              # The release binary isn't signed/notarized, so macOS quarantines it on
+              # download and Gatekeeper blocks it with "Apple could not verify... free
+              # of malware". Clear the flag so \`pcat\` runs right after install.
+              #
+              # Cellar files are installed read-only, and xattr can't touch a
+              # read-only file even as its owner, so make it writable first and
+              # restore the normal Homebrew executable permissions afterwards.
+              pcat = bin/"pcat"
+              return unless pcat.exist?
+
+              pcat.chmod 0755
+              Kernel.system "/usr/bin/xattr", "-d", "com.apple.quarantine", pcat.to_s
+              pcat.chmod 0555
+            end
+
             test do
               # postcat is a full-screen TUI with no CLI flags/subcommands, so there is
               # nothing sensible to invoke non-interactively; just confirm it installed.

@@ -42,7 +42,8 @@ class Postcat < Formula
     return unless postcat.exist?
 
     postcat.chmod 0755
-    Kernel.system "/usr/bin/xattr", "-d", "com.apple.quarantine", postcat.to_s
+    Kernel.system "/usr/bin/xattr", "-d", "com.apple.quarantine", postcat.to_s,
+                 out: File::NULL, err: File::NULL
     postcat.chmod 0555
   end
 

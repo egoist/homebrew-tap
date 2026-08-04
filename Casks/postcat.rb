@@ -1,14 +1,14 @@
 cask "postcat" do
-  version "0.1.0"
+  version "0.1.1"
 
   on_arm do
-    url "https://github.com/egoist/postcat/releases/download/v#{version}/postcat-#{version}-aarch64-apple-darwin.tar.gz"
-    sha256 :no_check
+    url "https://github.com/egoist/postcat/releases/download/v0.1.1/postcat-0.1.1-aarch64-apple-darwin.tar.gz"
+    sha256 "b721a5e595551f50a77fec84b27b81c5ed122a98389278b6354364269ff92b6b"
   end
 
   on_intel do
-    url "https://github.com/egoist/postcat/releases/download/v#{version}/postcat-#{version}-x86_64-apple-darwin.tar.gz"
-    sha256 :no_check
+    url "https://github.com/egoist/postcat/releases/download/v0.1.1/postcat-0.1.1-x86_64-apple-darwin.tar.gz"
+    sha256 "47f31d8541c7bc71ebb8e5c5f1ef68d0d03835451705025f7bca3461216e5a21"
   end
 
   name "Postcat"

@@ -3,9 +3,9 @@ class Postcat < Formula
   homepage "https://github.com/egoist/postcat"
   version "0.1.1"
 
-  # Installed as `pcat` because `postcat` is already the name of a
-  # command that ships with Postfix (used to view mail queue files),
-  # so this formula must not shadow/conflict with it.
+  # `postcat` collides with the mail-queue-viewer command that ships with
+  # Postfix, so this formula also installs a `pcat` alias (a symlink to the
+  # same binary) for anyone who wants an unambiguous name on their PATH.
 
   on_macos do
     if Hardware::CPU.arm?
@@ -13,7 +13,8 @@ class Postcat < Formula
       sha256 "b721a5e595551f50a77fec84b27b81c5ed122a98389278b6354364269ff92b6b"
 
       define_method(:install) do
-        bin.install "postcat" => "pcat"
+        bin.install "postcat"
+        bin.install_symlink bin/"postcat" => "pcat"
       end
     end
 
@@ -22,7 +23,8 @@ class Postcat < Formula
       sha256 "47f31d8541c7bc71ebb8e5c5f1ef68d0d03835451705025f7bca3461216e5a21"
 
       define_method(:install) do
-        bin.install "postcat" => "pcat"
+        bin.install "postcat"
+        bin.install_symlink bin/"postcat" => "pcat"
       end
     end
   end
@@ -30,23 +32,26 @@ class Postcat < Formula
   def post_install
     # The release binary isn't signed/notarized, so macOS quarantines it on
     # download and Gatekeeper blocks it with "Apple could not verify... free
-    # of malware". Clear the flag so `pcat` runs right after install.
+    # of malware". Clear the flag so `postcat`/`pcat` run right after install.
     #
     # Cellar files are installed read-only, and xattr can't touch a
     # read-only file even as its owner, so make it writable first and
-    # restore the normal Homebrew executable permissions afterwards.
-    pcat = bin/"pcat"
-    return unless pcat.exist?
+    # restore the normal Homebrew executable permissions afterwards. `pcat`
+    # is just a symlink to this same file, so clearing it here is enough.
+    postcat = bin/"postcat"
+    return unless postcat.exist?
 
-    pcat.chmod 0755
-    Kernel.system "/usr/bin/xattr", "-d", "com.apple.quarantine", pcat.to_s
-    pcat.chmod 0555
+    postcat.chmod 0755
+    Kernel.system "/usr/bin/xattr", "-d", "com.apple.quarantine", postcat.to_s
+    postcat.chmod 0555
   end
 
   test do
     # postcat is a full-screen TUI with no CLI flags/subcommands, so there is
     # nothing sensible to invoke non-interactively; just confirm it installed.
-    assert_path_exists bin/"pcat"
-    assert_predicate bin/"pcat", :executable?
+    assert_path_exists bin/"postcat"
+    assert_predicate bin/"postcat", :executable?
+    assert_predicate bin/"pcat", :symlink?
+    assert_equal bin/"postcat", (bin/"pcat").realpath
   end
 end

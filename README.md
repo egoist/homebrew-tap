@@ -2,15 +2,7 @@
 
 ## Casks
 
-- [`postcat`](https://github.com/egoist/postcat) — keyboard-first API client in your terminal
 - [`kero`](https://kero.sh) — keyboard-first terminal workspace
-
-```sh
-brew install --cask egoist/tap/postcat
-```
-
-Installs as the `pcat` command (not `postcat`), since `postcat` already
-names the Postfix mail-queue viewer that ships on most systems.
 
 ```sh
 brew install egoist/tap/kero
@@ -28,6 +20,7 @@ brew upgrade --greedy kero
 
 - [`aho`](https://github.com/egoist/aho)
 - [`dum`](https://github.com/egoist/dum)
+- [`postcat`](https://github.com/egoist/postcat) — keyboard-first API client in your terminal (installs as `pcat`, since `postcat` already names the Postfix mail-queue viewer that ships on most systems)
 
 ## How do I install these formulae?
 

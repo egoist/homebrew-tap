@@ -1,4 +1,4 @@
-name: Update postcat cask
+name: Update postcat formula
 
 on:
   repository_dispatch:
@@ -33,7 +33,7 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      - name: Update cask
+      - name: Update formula
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
@@ -46,41 +46,51 @@ jobs:
           arm_sha=$(sha256sum "$RUNNER_TEMP/$arm" | cut -d ' ' -f1)
           intel_sha=$(sha256sum "$RUNNER_TEMP/$intel" | cut -d ' ' -f1)
 
-          cat > Casks/postcat.rb <<EOF
-          cask "postcat" do
-            version "${VERSION}"
-
-            on_arm do
-              url "${base}/${arm}"
-              sha256 "${arm_sha}"
-            end
-
-            on_intel do
-              url "${base}/${intel}"
-              sha256 "${intel_sha}"
-            end
-
-            name "Postcat"
+          cat > Formula/postcat.rb <<EOF
+          class Postcat < Formula
             desc "Keyboard-first API client in your terminal"
             homepage "https://github.com/egoist/postcat"
+            version "${VERSION}"
 
             # Installed as \`pcat\` because \`postcat\` is already the name of a
             # command that ships with Postfix (used to view mail queue files),
-            # so installing this cask must not shadow/conflict with it.
-            binary "postcat", target: "pcat"
+            # so this formula must not shadow/conflict with it.
 
-            postflight do
-              system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/postcat"]
+            on_macos do
+              if Hardware::CPU.arm?
+                url "${base}/${arm}"
+                sha256 "${arm_sha}"
+
+                define_method(:install) do
+                  bin.install "postcat" => "pcat"
+                end
+              end
+
+              if Hardware::CPU.intel?
+                url "${base}/${intel}"
+                sha256 "${intel_sha}"
+
+                define_method(:install) do
+                  bin.install "postcat" => "pcat"
+                end
+              end
+            end
+
+            test do
+              # postcat is a full-screen TUI with no CLI flags/subcommands, so there is
+              # nothing sensible to invoke non-interactively; just confirm it installed.
+              assert_path_exists bin/"pcat"
+              assert_predicate bin/"pcat", :executable?
             end
           end
           EOF
 
-      - name: Commit cask
+      - name: Commit formula
         env:
           VERSION: ${{ steps.version.outputs.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Casks/postcat.rb
+          git add Formula/postcat.rb
           git commit -m "postcat ${VERSION}" || exit 0
           git push

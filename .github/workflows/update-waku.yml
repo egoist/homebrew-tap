@@ -40,9 +40,12 @@ jobs:
           set -euo pipefail
           # Waku ships from R2, not GitHub releases. Hashing the published DMG
           # is the point of this job: it is the exact file `brew install` gets.
+          # --retry-all-errors covers the 404 window: the release script fires
+          # this the moment the upload finishes, so the object can briefly not
+          # be visible yet, and a plain --retry does not retry a 404.
           dmg="Waku-${VERSION}.dmg"
-          curl --fail --location --retry 3 --output "$RUNNER_TEMP/$dmg" \
-            "https://releases.waku.sh/$dmg"
+          curl --fail --location --retry 5 --retry-delay 5 --retry-all-errors \
+            --output "$RUNNER_TEMP/$dmg" "https://releases.waku.sh/$dmg"
           sha=$(sha256sum "$RUNNER_TEMP/$dmg" | cut -d ' ' -f1)
 
           # Patch the two stanzas that move, rather than regenerating the cask,

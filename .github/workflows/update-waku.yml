@@ -1,0 +1,66 @@
+name: Update waku cask
+
+on:
+  repository_dispatch:
+    types: [waku-release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: waku release version (without the v prefix)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: version
+        env:
+          DISPATCH_VERSION: ${{ github.event.client_payload.version }}
+          MANUAL_VERSION: ${{ inputs.version }}
+        run: |
+          version="$DISPATCH_VERSION"
+          if [ -z "$version" ]; then version="$MANUAL_VERSION"; fi
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([-.].*)?$ ]]; then
+            echo "Invalid version: $version" >&2
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Update cask
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          # Waku ships from R2, not GitHub releases. Hashing the published DMG
+          # is the point of this job: it is the exact file `brew install` gets.
+          dmg="Waku-${VERSION}.dmg"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/$dmg" \
+            "https://releases.waku.sh/$dmg"
+          sha=$(sha256sum "$RUNNER_TEMP/$dmg" | cut -d ' ' -f1)
+
+          # Patch the two stanzas that move, rather than regenerating the cask,
+          # so hand-maintained parts (depends_on, zap) survive a release.
+          sed -i -E "s|^(  version )\"[^\"]*\"|\1\"${VERSION}\"|" Casks/waku.rb
+          sed -i -E "s|^(  sha256 )\"[^\"]*\"|\1\"${sha}\"|" Casks/waku.rb
+
+          # A sed that matched nothing exits 0, which would push a stale cask
+          # while the release reports success. Fail loudly instead.
+          grep -q "  version \"${VERSION}\"$" Casks/waku.rb
+          grep -q "  sha256 \"${sha}\"$" Casks/waku.rb
+
+      - name: Commit cask
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/waku.rb
+          git commit -m "waku ${VERSION}" || exit 0
+          git push
